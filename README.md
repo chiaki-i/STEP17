@@ -7,8 +7,8 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-- 目次の作成は `doctoc README.md --github` を実行すればよい
+目次の作成は `doctoc README.md --github` を実行すればよい
 
 ## week1
-
-- dictionary : This list has been compiled by Solar Designer of Openwall Project, http://www.openwall.com/wordlists/ <br> [source](http://download.openwall.net/pub/wordlists/languages/English/3-large/)
+- [i can haz words](https://icanhazwordz.appspot.com/)
+- dictionary : [source](https://icanhazwordz.appspot.com/dictionary.words)

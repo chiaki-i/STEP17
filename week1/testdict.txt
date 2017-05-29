@@ -1,6 +1,10 @@
+m
+moon
 bear
-camel
+Camel
+apple
 cat
 dog
+goddess
 giraffe
 rabbit
