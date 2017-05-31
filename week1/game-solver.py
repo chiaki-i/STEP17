@@ -143,5 +143,4 @@ if __name__ == '__main__':
     # assert calc('garden') == 49   
     assert select_best (tiny_list)                == 'giraffe'
     assert select_best(partial_match('mdbigarn', dictionary))          == 'bridgman'
-    # select_best(partial_match ('mdbigarnayprfchz', dictionary))
-
+    answer = select_best(partial_match ('mdbigarnayprfchz', dictionary))
