@@ -12,3 +12,7 @@
 ## week1
 - [i can haz words](https://icanhazwordz.appspot.com/)
 - dictionary : [source](https://icanhazwordz.appspot.com/dictionary.words)
+
+## week2
+- Python 2.* と Python3 ~~
+  [Dive into Python3](http://diveintopython3-ja.rdy.jp/porting-code-to-python-3-with-2to3.html)
