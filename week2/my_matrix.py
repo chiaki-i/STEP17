@@ -51,9 +51,8 @@ def calc(n):
     """
 
 if __name__ == '__main__':
-    file = open('matrix.dat', 'w')
-    for i in range(100):
-        # for j in range(5):
-            file.write(calc(i*10))
+    file = open('out3.dat', 'w')
+    for i in range(51):
+        file.write(calc(i*10))
     file.close()
     
