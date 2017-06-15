@@ -56,11 +56,12 @@ def tokenize(line):
             print ('Invalid character found: ' + line[index])
             exit(1)
         tokens.append(token)
-    print(tokens)
     return tokens
 
-def check_syntax (tokens):
-    # parentheses
+def check_paren (tokens):
+    '''
+    左の括弧と右の括弧が対応しているか、括弧の数でチェックする。
+    '''
     index = 0
     flag_paren = 0
     while index < len(tokens):
@@ -72,11 +73,20 @@ def check_syntax (tokens):
     if flag_paren != 0:
         print('Invalid syntax : unmatched parentheses')
         exit(1)
-    # numbers & operators
+
+def check_operators (tokens):
+    '''
+    括弧の含まれない tokens を受け取ってきたら、
+        ・演算子が連続していないか
+        ・式の最後に演算子が来ていないか
+    をチェックする。正しければ tokens を返し、正しくなければ exit する。
+    tokens は括弧が含まれていてはいけないので、eval_paren の中でだけ使われる。
+    '''
     flag_op = 0
     operators = ['PLUS', 'MINUS', 'TIMES', 'DIVIDE']
     if tokens[0]['type'] in ['PLUS', 'MINUS']:
-        index = 1 
+        index = 0
+        tokens = remove_unary_operator_from(tokens)
     else:
         index = 0
     while index < len(tokens): 
@@ -91,7 +101,29 @@ def check_syntax (tokens):
         index += 1
     if flag_op != 1: # (the number of num) should be ((the number of operators) + 1)
         print('Invalid syntax : too many operators')
-        exit(1)   
+        exit(1) 
+    return tokens
+    
+def remove_unary_operator_from (tokens):
+    '''
+    単項演算子があったら、[符号, 数字]を[負の数字]に置き換えた tokens を返す
+    '''
+    if len(tokens) == 3 and tokens[1]['type'] in ['PLUS', 'MINUS']:
+        del tokens[0]
+    if tokens[1]['type'] != 'NUMBER': # unused pattern
+        print('Invalid syntax : unary error') 
+        exit(1)
+    sign = 0
+    if tokens[0]['type'] == 'PLUS':
+        sign = 1
+    elif tokens[0]['type'] == 'MINUS':
+        sign = -1
+    simple_number = tokens[1]['number'] * sign
+    for i in range(2):
+        del tokens[0]
+    tokens.insert(0, {'type': 'NUMBER', 'number' : simple_number})
+    # print(tokens)
+    return tokens
 
 def is_times_divide_in (tokens):
     index = 0
@@ -103,6 +135,9 @@ def is_times_divide_in (tokens):
     return flag
 
 def eval_times_divide (tokens):
+    '''
+    括弧も乗除算も含まない tokens について、和差算をしてその結果の tokens を返す
+    '''
     while len(tokens) >= 3: # final form should be like [Sign, Number]
         index = 1
         if not (is_times_divide_in (tokens)): # finish if there are no '*'s or '/'s
@@ -138,6 +173,9 @@ def is_paren_in (tokens):
     return flag
 
 def pick_answer_from (tokens):
+    '''
+    [符号, 数字]の形になった tokens から、答えの数字を取り出す。
+    '''
     answer = 0
     sign = 0
     if len(tokens) == 2:
@@ -151,10 +189,12 @@ def pick_answer_from (tokens):
     else: 
         print('too many tokens!')
         exit(1)
-    print(answer)
     return answer
 
 def eval_plus_minus (tokens):
+    '''
+    括弧を含まない tokens を受け取ったら、和差算をスキップして乗除算だけ計算して tokens を返す。
+    '''
     while len(tokens) >= 3: # final form should be like [Sign, Number]
         index = 1
         if len(tokens) == 3 and tokens[1]['type'] in ['PLUS', 'MINUS']:
@@ -179,26 +219,31 @@ def eval_plus_minus (tokens):
     return tokens
 
 def eval_paren (tokens):
+    '''
+    token 内に括弧がある場合、最も内側の括弧を計算して、
+    括弧の部分をその計算結果で置き換える。
+    これを、tokensから括弧がなくなるまで続けて、括弧のない tokens を返す。
+    '''
     tokens.insert(0, {'type': 'PLUS'}) # Insert a dummy '+' token
     while True:
         if not (is_paren_in (tokens)): 
-            # print('no parentheses.')
             break
         start = 0
         end = 0
         for index in range(len(tokens)): # 一周するだけ
             if tokens[index]['type'] == 'LPAREN':
                 start = index + 1 # after paren starts
-                print('start from ' + str(start))
+                # print('start from ' + str(start))
             elif tokens[index]['type'] == 'RPAREN':
                 if end == 0:
                     end = index - 1 # before paren ends
                 else:
                     end
-                print('end ' + str(end))
+                # print('end ' + str(end))
         tmp = []
         for i in range(start, end + 1):
             tmp.append(tokens[i])
+        check_operators(tmp)
         tmp.insert(0, {'type': 'PLUS'})
         tmp = eval_times_divide(tmp)
         tmp = eval_plus_minus(tmp)
@@ -209,7 +254,7 @@ def eval_paren (tokens):
     return tokens
 
 def evaluate (tokens):
-    check_syntax(tokens)
+    check_paren(tokens)
 
     tokens = eval_paren(tokens)
     # print('===== PARENTHESES DISSAPEARED! =====')
@@ -240,10 +285,15 @@ def runTest():
     print ('==== Test started! =====')
     test('1+2', 3)
     test('1.0+2.1-3', 0.1)
+    test('-1', -1)
+    test('(-100)', -100)
+    test('((-1)+2)*3', 3)
+    test('(1 + (3 + 4) / 2)*3', 13.5)
     print ('==== Test finished! ====')
 
 
 runTest()
+
 while True:
     print ('> ', end='')
     line = input()
