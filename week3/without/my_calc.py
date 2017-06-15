@@ -22,10 +22,10 @@ def readOperator(line, index, op):
         token = {'type': 'MINUS'}
     elif op == 'DIVIDE':
         token = {'type': 'DIVIDE'}
-    elif op == 'L_PAREN':
-        token = {'type': 'L_PAREN'}
-    elif op == 'R_PAREN':
-        token = {'type': 'R_PAREN'}
+    elif op == 'LPAREN':
+        token = {'type': 'LPAREN'}
+    elif op == 'RPAREN':
+        token = {'type': 'RPAREN'}
     else:
         print('unknown operator?') # unused pattern
         exit(1)
@@ -46,13 +46,14 @@ def tokenize(line):
         elif line[index] == '/':
             (token, index) = readOperator(line, index, 'DIVIDE')
         elif line[index] == '(':
-            (token, index) = readOperator(line, index, 'L_PAREN')
+            (token, index) = readOperator(line, index, 'LPAREN')
         elif line[index] == ')':
-            (token, index) = readOperator(line, index, 'R_PAREN')
+            (token, index) = readOperator(line, index, 'RPAREN')
         else:
             print ('Invalid character found: ' + line[index])
             exit(1)
         tokens.append(token)
+    print(tokens)
     return tokens
 
 def check_syntax (tokens):
@@ -60,9 +61,9 @@ def check_syntax (tokens):
     index = 0
     flag_paren = 0
     while index < len(tokens):
-        if tokens[index]['type'] == 'L_PAREN':
+        if tokens[index]['type'] == 'LPAREN':
             flag_paren += 1
-        elif tokens[index]['type'] == 'R_PAREN':
+        elif tokens[index]['type'] == 'RPAREN':
             flag_paren -= 1
         index += 1
     if flag_paren != 0:
@@ -99,7 +100,6 @@ def is_times_divide_in (tokens):
     return flag
 
 def eval_times_divide (tokens):
-    tokens.insert(0, {'type': 'PLUS'}) # Insert a dummy '+' token
     while len(tokens) >= 3: # final form should be like [Sign, Number]
         index = 1
         if not (is_times_divide_in (tokens)): # finish if there are no '*'s or '/'s
@@ -123,12 +123,37 @@ def eval_times_divide (tokens):
                 else:
                     print ('Invalid syntax') # unused
             index += 1
-            print(tokens)
     return tokens
+
+def is_paren_in (tokens):
+    index = 0
+    flag = False
+    while index < len(tokens):
+        if tokens[index]['type'] in ['LPAREN', 'RPAREN']:
+            flag = True
+        index += 1
+    return flag
+
+def pick_answer_from (tokens):
+    answer = 0
+    sign = 0
+    if len(tokens) == 2:
+        if tokens[0]['type'] == 'PLUS':
+            sign = 1
+        elif tokens[0]['type'] == 'MINUS':
+            sign = -1
+        answer = sign * tokens[1]['number']
+    elif len(tokens) == 1 and tokens[0]['type'] == 'NUMBER':
+        answer = tokens[0]['number']
+    print(answer)
+    return answer
 
 def eval_plus_minus (tokens):
     while len(tokens) >= 3: # final form should be like [Sign, Number]
         index = 1
+        if len(tokens) == 3 and tokens[1]['type'] in ['PLUS', 'MINUS']:
+            del tokens[0]
+            break
         while index < len(tokens):
             if tokens[index]['type'] == 'NUMBER' and index > 2:
                 if tokens[index - 1]['type'] == 'PLUS':
@@ -145,17 +170,77 @@ def eval_plus_minus (tokens):
                     print ('Invalid syntax') # unused
                     exit(1)
             index += 1
-            print(tokens)
     return tokens
 
+def eval_paren (tokens):
+    tokens.insert(0, {'type': 'PLUS'}) # Insert a dummy '+' token
+    while True:
+        if not (is_paren_in (tokens)): 
+            print('no parentheses.')
+            break
+        start = 0
+        end = 0
+        for index in range(len(tokens)): # 一周するだけ
+            if tokens[index]['type'] == 'LPAREN':
+                start = index + 1 # after paren starts
+                print('start from ' + str(start))
+            elif tokens[index]['type'] == 'RPAREN':
+                if end == 0:
+                    end = index - 1 # before paren ends
+                else:
+                    end
+                print('end ' + str(end))
+        tmp = []
+        for i in range(start, end + 1):
+            tmp.append(tokens[i])
+        tmp.insert(0, {'type': 'PLUS'})
+        tmp = eval_times_divide(tmp)
+        tmp = eval_plus_minus(tmp)
+        tmp_ans = pick_answer_from(tmp)
+        for token in range(start - 1, end + 2):
+            del tokens[start - 1]
+        tokens.insert(start - 1, {'type': 'NUMBER', 'number': tmp_ans})
+    return tokens
+
+def evaluate (tokens):
+    check_syntax(tokens)
+
+    tokens = eval_paren(tokens)
+    # print('===== PARENTHESES DISSAPEARED! =====')
+    # print(tokens)
+
+    tokens = eval_times_divide(tokens)
+    # print('===== TIMES & DIVIDE SUCCEEDED! ====')
+    # print(tokens)
+
+    tokens = eval_plus_minus(tokens)
+    # print('===== PLUS & MINUS SUCCEEDED! ======')
+    # print(tokens)
+
+    answer = pick_answer_from(tokens)
+    return answer
+
+def test(line, expectedAnswer):
+    tokens = tokenize(line)
+    actualAnswer = evaluate(tokens)
+    if abs(actualAnswer - expectedAnswer) < 1e-8:
+        print ('PASS! (%s = %f)' % (line, expectedAnswer))
+    else:
+        print ('FAIL! (%s should be %f but was %f)' % (line, expectedAnswer, actualAnswer))
+
+
+# Add more tests to this function :)
+def runTest():
+    print ('==== Test started! ====')
+    test('1+2', 3)
+    test('1.0+2.1-3', 0.1)
+    print ('==== Test finished! ===')
+
+
+runTest()
 while True:
     print ('> ', end='')
     line = input()
     tokens = tokenize(line)
-    check_syntax(tokens)
-    tokens = eval_times_divide(tokens)
-    print('TIMES & DIVIDE HAS SUCCESSFULLY ENDED!')
-    tokens = eval_plus_minus(tokens)
-    print('PLUS & MINUS HAS SUCCESSFULLY ENDED! YAY!')
-    # answer = evaluate(tokens)
-    # print ('answer = %f\n' % answer)
+    answer = evaluate(tokens)
+    print ('answer = ' + str(answer))
