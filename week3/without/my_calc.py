@@ -35,7 +35,10 @@ def tokenize(line):
     tokens = []
     index = 0
     while index < len(line):
-        if line[index].isdigit():
+        if line[index] == ' ':
+            index += 1
+            continue # skip spaces
+        elif line[index].isdigit():
             (token, index) = readNumber(line, index)
         elif line[index] == '+':
             (token, index) = readOperator(line, index, 'PLUS')
@@ -145,6 +148,9 @@ def pick_answer_from (tokens):
         answer = sign * tokens[1]['number']
     elif len(tokens) == 1 and tokens[0]['type'] == 'NUMBER':
         answer = tokens[0]['number']
+    else: 
+        print('too many tokens!')
+        exit(1)
     print(answer)
     return answer
 
@@ -176,7 +182,7 @@ def eval_paren (tokens):
     tokens.insert(0, {'type': 'PLUS'}) # Insert a dummy '+' token
     while True:
         if not (is_paren_in (tokens)): 
-            print('no parentheses.')
+            # print('no parentheses.')
             break
         start = 0
         end = 0
@@ -231,10 +237,10 @@ def test(line, expectedAnswer):
 
 # Add more tests to this function :)
 def runTest():
-    print ('==== Test started! ====')
+    print ('==== Test started! =====')
     test('1+2', 3)
     test('1.0+2.1-3', 0.1)
-    print ('==== Test finished! ===')
+    print ('==== Test finished! ====')
 
 
 runTest()
