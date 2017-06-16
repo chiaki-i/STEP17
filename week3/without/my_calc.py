@@ -220,9 +220,8 @@ def eval_plus_minus (tokens):
 
 def eval_paren (tokens):
     '''
-    token 内に括弧がある場合、最も内側の括弧を計算して、
-    括弧の部分をその計算結果で置き換える。
-    これを、tokensから括弧がなくなるまで続けて、括弧のない tokens を返す。
+    tokens 内に括弧がある場合、最も内側の括弧を計算して、括弧の部分をその計算結果で置き換える。
+    これを、tokensから括弧がなくなるまで続け、なくなったら残りの計算をして、tokens を返す。
     '''
     tokens.insert(0, {'type': 'PLUS'}) # Insert a dummy '+' token
     while True:
@@ -251,23 +250,19 @@ def eval_paren (tokens):
         for token in range(start - 1, end + 2):
             del tokens[start - 1]
         tokens.insert(start - 1, {'type': 'NUMBER', 'number': tmp_ans})
+    tokens = eval_times_divide(tokens)
+    # print('===== TIMES & DIVIDE SUCCEEDED! ====')
+    # print(tokens)
+    tokens = eval_plus_minus(tokens)
+    # print('===== PLUS & MINUS SUCCEEDED! ======')
+    # print(tokens)
     return tokens
 
 def evaluate (tokens):
     check_paren(tokens)
-
     tokens = eval_paren(tokens)
     # print('===== PARENTHESES DISSAPEARED! =====')
     # print(tokens)
-
-    tokens = eval_times_divide(tokens)
-    # print('===== TIMES & DIVIDE SUCCEEDED! ====')
-    # print(tokens)
-
-    tokens = eval_plus_minus(tokens)
-    # print('===== PLUS & MINUS SUCCEEDED! ======')
-    # print(tokens)
-
     answer = pick_answer_from(tokens)
     return answer
 
@@ -283,12 +278,24 @@ def test(line, expectedAnswer):
 # Add more tests to this function :)
 def runTest():
     print ('==== Test started! =====')
+    # 単純な四則演算
     test('1+2', 3)
+    test('1-3', -2)
+    test('1*3', 3)
+    test('4/5', 0.8)
+    # 整数・小数混合
     test('1.0+2.1-3', 0.1)
+    # 単項演算子
     test('-1', -1)
     test('(-100)', -100)
-    test('((-1)+2)*3', 3)
-    test('(1 + (3 + 4) / 2)*3', 13.5)
+    test('+1', 1)
+    test('(+3)', 3)
+    # 括弧 (+ 単項演算子)
+    test('(1+(2+(3+4)*2)*3)', 49)
+    test('((-1)+2)*3', 3) 
+    test('(1+(+2))', 3)
+    # スペース
+    test('(1 + (3 + 4) / 2) * 3', 13.5)
     print ('==== Test finished! ====')
 
 
