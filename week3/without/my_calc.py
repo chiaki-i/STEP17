@@ -221,12 +221,13 @@ def eval_plus_minus (tokens):
 def eval_paren (tokens):
     '''
     tokens 内に括弧がある場合、最も内側の括弧を計算して、括弧の部分をその計算結果で置き換える。
-    これを、tokensから括弧がなくなるまで続け、なくなったら残りの計算をして、tokens を返す。
+    これを、tokensから括弧がなくなるまで続け、なくなったら残りの計算をして、answer を返す。
     '''
-    tokens.insert(0, {'type': 'PLUS'}) # Insert a dummy '+' token
     while True:
         if not (is_paren_in (tokens)): 
             break
+        else:
+            check_paren(tokens)
         start = 0
         end = 0
         for index in range(len(tokens)): # 一周するだけ
@@ -242,33 +243,27 @@ def eval_paren (tokens):
         tmp = []
         for i in range(start, end + 1):
             tmp.append(tokens[i])
-        check_operators(tmp)
-        tmp.insert(0, {'type': 'PLUS'})
-        tmp = eval_times_divide(tmp)
-        tmp = eval_plus_minus(tmp)
-        tmp_ans = pick_answer_from(tmp)
+        tmp_ans = evaluate(tmp)
         for token in range(start - 1, end + 2):
             del tokens[start - 1]
         tokens.insert(start - 1, {'type': 'NUMBER', 'number': tmp_ans})
-    tokens = eval_times_divide(tokens)
-    # print('===== TIMES & DIVIDE SUCCEEDED! ====')
-    # print(tokens)
-    tokens = eval_plus_minus(tokens)
-    # print('===== PLUS & MINUS SUCCEEDED! ======')
-    # print(tokens)
-    return tokens
+    answer = evaluate(tokens)
+    return answer
 
 def evaluate (tokens):
-    check_paren(tokens)
-    tokens = eval_paren(tokens)
-    # print('===== PARENTHESES DISSAPEARED! =====')
-    # print(tokens)
+    '''
+    括弧の含まれない tokens を計算し、答えを返す。
+    '''
+    check_operators(tokens)
+    tokens.insert(0, {'type': 'PLUS'})
+    tokens = eval_times_divide(tokens)
+    tokens = eval_plus_minus(tokens)
     answer = pick_answer_from(tokens)
     return answer
 
 def test(line, expectedAnswer):
     tokens = tokenize(line)
-    actualAnswer = evaluate(tokens)
+    actualAnswer = eval_paren(tokens)
     if abs(actualAnswer - expectedAnswer) < 1e-8:
         print ('PASS! (%s = %f)' % (line, expectedAnswer))
     else:
@@ -305,5 +300,5 @@ while True:
     print ('> ', end='')
     line = input()
     tokens = tokenize(line)
-    answer = evaluate(tokens)
+    answer = eval_paren(tokens)
     print ('answer = ' + str(answer))
