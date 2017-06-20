@@ -101,6 +101,6 @@ ENV/
 .mypy_cache/
 
 # step - week4 - large data
-links.txt
-pages.txt
+links.*
+pages.*
 wikipedia_links.zip
