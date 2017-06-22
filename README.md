@@ -1,18 +1,24 @@
 # STEP17
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-- [week1](#week1)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-目次の作成は `doctoc README.md --github` を実行すればよい
-
 ## week1
+- Anagrams and Lex
 - [i can haz words](https://icanhazwordz.appspot.com/)
 - dictionary : [source](https://icanhazwordz.appspot.com/dictionary.words)
+- もっとも長い単語・もっとも点数の高い単語
+- 二分探索など
 
 ## week2
-- Python 2.* と Python3 ~~
-  [Dive into Python3](http://diveintopython3-ja.rdy.jp/porting-code-to-python-3-with-2to3.html)
+- アルゴリズムとデータ構造1
+- 木構造・ハッシュテーブル
+- 行列の計算と実行時間測定
+- キャッシュに適したデータ構造
+
+## week3
+- デバッグの方法
+- 見通しの良いプログラム
+- 電卓の拡張
+
+## week4
+- TESTING
+- アルゴリズムとデータ構造2
+- グラフ - 深さ優先探索・幅優先探索
