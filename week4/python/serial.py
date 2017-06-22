@@ -1,6 +1,17 @@
-'''続き物を探してくるプログラム'''
+'''続きもののページを探してくるプログラム'''
 
 import re
+import csv
+
+def read_file(file):
+    '''
+    pages.txtの形式のファイルを読み込んで、ページのタイトルだけのリストを作る
+    '''
+    lst = []
+    for line in file:
+        pagename = (line[:-1].split('\t'))[1] # 1行読むと(num, pagename)となる
+        lst.append(pagename)
+    return lst
 
 def judge_string(letters):
     '''
@@ -9,7 +20,7 @@ def judge_string(letters):
     という格好になっていれば、それを
     [数字より前][数字][数字よりあと] に分解する
     '''
-    exp = (re.compile('.*[^0-9]+([0-9]+([^0-9]+.*))')).match(letters)
+    exp = (re.compile('[^0-9]+([0-9]+([^0-9]+.*))')).match(letters)
     if exp is None:        # None との比較には is を使う
         answer = []
     else:
@@ -53,7 +64,7 @@ def collect_serial(lst):
 
 def is_in_collections(collections, item1, item2):
     '''
-    collectionsにitem1, item2の組み合わせのものがすでに含まれているかどうか調べる
+    collectionsにitem1, item2の組み合わせのものが含まれているかどうか調べる
     booleanを返す
     '''
     flag = False
@@ -64,24 +75,42 @@ def is_in_collections(collections, item1, item2):
             continue
     return flag
 
-def printlst(lst):
-    '''ただprintするだけ'''
-    for item in lst:
-        print(item)
+def printlst(lst, string):
+    '''リストを指定した場所(指定したファイル名、または標準出力)に書き出す'''
+    if string == 'stdout':
+        for item in lst:
+            print(item)
+    else:
+        with open(string + '.txt', 'w') as file_out:
+            writer = csv.writer(file_out)
+            writer.writerows(lst)
     return None
 
 if __name__ == '__main__':
+    # use tiny data (contains pagenames only)
     FILE = open('../wiki/serial.txt', 'r')
     SERIAL = [word.rstrip() for word in FILE.readlines()]
+    FILE.close()
     print(SERIAL)
     LIST = judge_stringlist(SERIAL)
     COLLECTIONS = collect_serial(LIST)
-    printlst(LIST)
-    printlst(COLLECTIONS)
+    printlst(LIST, 'stdout')
+    printlst(COLLECTIONS, 'stdout')
+    
+    # use tiny version of 'pages.txt'
+    FILE = open('../wiki/test-pages-serial.txt', 'r')
+    SERIAL = read_file(FILE)
+    FILE.close()
+    LIST = judge_stringlist(SERIAL)
+    COLLECTIONS = collect_serial(LIST)
+    printlst(COLLECTIONS, 'result2')
+
+    # user input
+    # exit program if 'q'
     while True:
         print('>>> ', end='')
         LINE = input()
-        if LINE is 'q':
+        if LINE == 'q':
             print('bye')
             exit(1)
         else:
