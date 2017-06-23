@@ -1,4 +1,4 @@
-'''続きもののページを探してくるプログラム'''
+'''連番のページを探してくるプログラム'''
 
 import re
 import csv
@@ -86,6 +86,21 @@ def printlst(lst, string):
             writer.writerows(lst)
     return None
 
+def lst_sort(lst):
+    '''
+    collections の形をしたリストを受け取ったら、各要素内の番号のリストの長さが
+    3以上のものに対して、長さの情報を付け加え、長い順に並べる
+    '''
+    result = []
+    for item in lst:
+        temp_len = len(item[2])
+        if temp_len < 3:
+            continue
+        else:
+            result.append([item[0], item[1], temp_len])
+    result.sort(key=lambda x: x[2], reverse=True)
+    return result
+
 if __name__ == '__main__':
     # use tiny data (contains pagenames only)
     FILE = open('../wiki/serial.txt', 'r')
@@ -96,14 +111,15 @@ if __name__ == '__main__':
     COLLECTIONS = collect_serial(LIST)
     printlst(LIST, 'stdout')
     printlst(COLLECTIONS, 'stdout')
-    
+
     # use tiny version of 'pages.txt'
-    FILE = open('../wiki/test-pages-serial.txt', 'r')
+    FILE = open('../wiki/pages.txt', 'r')
     SERIAL = read_file(FILE)
     FILE.close()
     LIST = judge_stringlist(SERIAL)
     COLLECTIONS = collect_serial(LIST)
-    printlst(COLLECTIONS, 'result2')
+    SORTED = lst_sort(COLLECTIONS)
+    printlst(SORTED, 'sorted-result')
 
     # user input
     # exit program if 'q'
