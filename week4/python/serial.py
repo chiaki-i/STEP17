@@ -16,7 +16,7 @@ def read_file(file):
 def judge_string(letters):
     '''
     文字列を受け取って、
-    [任意の文字列][非数字][数字][非数字][任意の文字列]
+    [非数字][数字][非数字][任意の文字列]
     という格好になっていれば、それを
     [数字より前][数字][数字よりあと] に分解する
     '''
@@ -112,7 +112,8 @@ if __name__ == '__main__':
     printlst(LIST, 'stdout')
     printlst(COLLECTIONS, 'stdout')
 
-    # use tiny version of 'pages.txt'
+    # use 'pages.txt'
+    # if you want to try tiny version, see '../wiki/test-pages-serial.txt'
     FILE = open('../wiki/pages.txt', 'r')
     SERIAL = read_file(FILE)
     FILE.close()
