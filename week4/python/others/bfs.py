@@ -9,11 +9,13 @@ def bfs(start, goal, lst):
     '''
     q = [[start]]                        # 初期化
     answer = []
+    path = []
     while not(len(q) == 0):        
         path = q.pop(0)                  # dequeue
         n = path[len(path) - 1]
         if n == goal:
-            print(path)                  # 経路を表示
+            break
+            # print(path)                  # 経路を表示
             answer.append(path)
         else:
             for x in lst[n]:
@@ -21,8 +23,8 @@ def bfs(start, goal, lst):
                     new_path = path[:] 
                     new_path.append(x) 
                     q.append(new_path)   # enqueue
-    # print(answer)
-    return answer
+    # print(path)
+    return path
 
 def search(start, goal, pages, links):
     '''
@@ -70,7 +72,7 @@ if __name__ == '__main__':
     # No such pages: b. Stop BFS. と表示され終了する
     
     # use tiny data
-    file1 = open('../wiki/test-links.txt', 'r')
+    file1 = open('../../wiki/test-links.txt', 'r')
     links = []
     for line in file1:
         item = [int(i) for i in line[:-1].split('\t')]
@@ -78,7 +80,7 @@ if __name__ == '__main__':
     # print(links)
     file1.close()
     
-    file2 = open('../wiki/test-pages.txt', 'r')
+    file2 = open('../../wiki/test-pages.txt', 'r')
     pages = []
     for line in file2:
         item = line[:-1].split('\t')
