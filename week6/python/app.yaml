@@ -3,8 +3,12 @@ threadsafe: true
 runtime: python27
 
 handlers:
+- url: /stylesheets
+  static_dir: stylesheets
+- url: /img
+  static_dir: img
 - url: /.*
-  script: guestbook.application
+  script: main.app
 
 libraries:
 - name: webapp2
