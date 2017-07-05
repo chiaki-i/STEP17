@@ -4,4 +4,10 @@ runtime: python27
 
 handlers:
 - url: /.*
-  script: main.app
+  script: guestbook.application
+
+libraries:
+- name: webapp2
+  version: latest
+- name: jinja2
+  version: latest
