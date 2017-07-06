@@ -1,7 +1,9 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# -*- coding:utf-8 -*-
 
 import webapp2
+import common
+import tokyo
 
 MAIN_PAGE_HTML = """\
 <html>
@@ -68,12 +70,11 @@ class Transfer(webapp2.RequestHandler):
         self.response.write(RESULT_HTML2)
 
     def search(self, station1, station2):
-        f = open('networks/tokyo.txt', 'w')
-        
         result = [station1, station2]
         if station1 == '荻窪':
             print(result)
-        return result 
+        return result
+
         
 app = webapp2.WSGIApplication([
     ('/', MainPage),
