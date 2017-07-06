@@ -30,10 +30,8 @@ GUEST_BOOK_HTML1 = """\
     <link rel="stylesheet" type="text/css" href="/stylesheets/main.css" />
   </head>
   <body>
-    <img src="/img/gopher.png" width="200" alt="gopherくん" />
-    <div class="relative">
-      <img src="./img/fukidashi4.png" alt="" />
-      <p class="absolute"><h1> 
+    <div>
+      <img src="/img/gopher.png" width="200" alt="gopherくん" /><h1>
 """
 
 GUEST_BOOK_HTML2 = """\
