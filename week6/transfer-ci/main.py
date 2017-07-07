@@ -7,6 +7,7 @@ import common
 MAIN_PAGE_HTML = """\
 <html>
   <head>
+    <title>乗り換え案内</title>
     <link rel="stylesheet" type="text/css" href="/stylesheets/main.css" />
     <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
   </head>
@@ -20,7 +21,8 @@ MAIN_PAGE_HTML = """\
       </div>
       <div class="input_pata">
         到着:
-        <input type="text" name="to" rows="1" cols="60">駅
+        <input type="text" name="to" rows="1" cols="60">駅<br/>
+        (霞ヶ関駅は、「霞ケ関」と入力してください)
       </div>
       <div class="input_pata">
         出発時間(現在は使えません):
