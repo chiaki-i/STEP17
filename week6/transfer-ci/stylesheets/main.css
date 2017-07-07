@@ -9,12 +9,6 @@ div.input_pata {
     margin-left: 20px;
 }
 
-.relative {
-    position: relative;
-    width: 300px;
-}
-.absolute {
-    position: absolute;
-    right: 30px;
-    bottom: 30px;
+p.result {
+    margin-left: 20px;
 }
