@@ -1,17 +1,10 @@
 # Homework 7
 
-1. Fork a copy for your changes
-2. Clone it to your local workstation
-3. Create a new project to host your AI in https://console.cloud.google.com
-4. Update the "application" field in app.yaml to match your application id
-5. `appcfg.py update python/` or `goapp deploy go/` to deploy your app
-6. Add the appspot address to the ["Othello Players" sheet](https://docs.google.com/spreadsheets/d/1j2M92fZQjblAj3KPaLI2NJ0mkFS4dLv85jizmoMn3m0/edit#gid=0)
-7. **Modify the way a move is picked**
-8. re-deploy the app
-9. repeat steps 7 and 8 until you have a very clever AI :)
-10. eventually push your awesome clever AI to github.
-    * If you want to keep it secret until Thursday night, that's fine.
-11. email step16 with your github repository link as usual.
+* my app is [here](https://chiaki-othello.appspot.com/)
+
+* evaluate the second (=next) state of the board.
+* todo: something for further steps ahead.
+
 
 # Using reflector.go
 
