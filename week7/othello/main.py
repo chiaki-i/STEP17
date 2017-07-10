@@ -87,11 +87,16 @@ class Game:
                 return score
 
         def PickUpBestMove(self, moves_score):
-                moves_score = sorted(moves_score,
-                                     key=lambda x: x["Score"]["next_step"],
-                                     reverse=True)
-                best_move = moves_score[0]
-                return best_move
+                if moves_score:
+                        moves_score = sorted(moves_score,
+                                             key=lambda x: x["Score"]["next_step"],
+                                             reverse=True)
+                        best_move = moves_score[0]
+                        return best_move
+                else:
+                        return {"Where":None}
+                        
+                
                 
 
 	# Helper function of NextBoardPosition.  It looks towards
@@ -180,7 +185,10 @@ def PrettyPrint(board, nl="<br>"):
 
 def PrettyMove(move):
 	m = move["Where"]
-	return '%s%d' % (chr(ord('A') + m[0] - 1), m[1])
+        if m is not None:
+	        return '%s%d' % (chr(ord('A') + m[0] - 1), m[1])
+        else:
+                return 'PASS'
 
 class MainHandler(webapp2.RequestHandler):
         # Handling GET request, just for debugging purposes.
@@ -195,6 +203,8 @@ class MainHandler(webapp2.RequestHandler):
                         </textarea>
                         <p/><input type=submit>
                         </form>
+                        <a href="https://github.com/chiaki-i/STEP17/tree/master/week7">
+                        my github</a>
                         </body>
                         """)
                         return
@@ -230,10 +240,13 @@ class MainHandler(webapp2.RequestHandler):
     		        self.response.write(PrettyMove(move))
 
         def choose(self, valid_moves, best_move):
-                assert valid_moves 
-                for item in valid_moves:
-                        if item["Where"] == best_move["Where"]:
-                                return item
+                if valid_moves:
+                        for item in valid_moves:
+                                if item["Where"] == best_move["Where"]:
+                                        return item
+                else:
+                        return {"Where": None}
+                                        
                 
 
 app = webapp2.WSGIApplication([

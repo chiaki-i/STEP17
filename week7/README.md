@@ -1,8 +1,8 @@
 # Homework 7
 
 * my app is [here](https://chiaki-othello.appspot.com/)
-
 * evaluate the second (=next) state of the board.
+* return "PASS" when there are no valid moves.
 * todo: something for further steps ahead.
 
 
